@@ -12,9 +12,14 @@ const router = createRouter({
       },
       children: [
         {
-          path: "home",
+          path: "photos",
           name: "home",
           component: () => import("../views/HomePage.vue"),
+        },
+        {
+          path: "photos/:id",
+          name: "photo",
+          component: () => import("../views/PhotoInfo.vue"),
         },
       ],
     },
