@@ -17,7 +17,9 @@ const imageContainer = ref<HTMLElement | null>(null);
 // );
 
 onMounted(async () => {
-  await imagesStore.getImages();
+  if (imagesStore.images.length === 0) {
+    await imagesStore.getImages();
+  }
 });
 </script>
 

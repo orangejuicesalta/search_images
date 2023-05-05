@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { IImage } from "../types/types";
-import { getPhotos } from "../api/api";
+import { getImageInfo, getPhotos } from "../api/api";
 
 export const useImagesStore = defineStore("imageStore", {
   state: () => ({
@@ -10,13 +10,25 @@ export const useImagesStore = defineStore("imageStore", {
     loading: false,
   }),
   actions: {
-    removeFromFavourites(id: string) {
-      this.likedImages = this.likedImages.filter((image) => image.id !== id);
+    toggleLike(id: string) {
+      console.log("liked");
+      const index = this.likedImages.findIndex((image) => image.id === id);
+      if (index > -1) {
+        this.likedImages.splice(index, 1);
+      } else {
+        const image = this.images.find((value) => value.id === id);
+        if (image) this.likedImages.push(image);
+      }
+      console.log(this.likedImages.length);
+    },
+    isLiked(id: string) {
+      const idx = this.likedImages.findIndex((image) => image.id === id);
+      console.log(idx);
+      return idx > -1;
     },
     async getImagesOnscroll() {
       this.loading = true;
       try {
-        this.currentPage++;
         await new Promise((res) => setTimeout(res, 2000));
         const data = await getPhotos(this.currentPage, "");
         this.images = [...this.images, ...data];
@@ -30,7 +42,7 @@ export const useImagesStore = defineStore("imageStore", {
       this.loading = true;
       try {
         const data = await getPhotos(1, "");
-        this.images = data;
+        this.images = [...this.images, ...data];
       } catch (e: any) {
         console.log(e);
       } finally {
@@ -38,13 +50,26 @@ export const useImagesStore = defineStore("imageStore", {
       }
     },
     async searchImages(query: string) {
-      const data = await getPhotos(this.currentPage, query);
-      this.images = data;
-      this.currentPage++;
+      this.loading = true;
+      try {
+        const data = await getPhotos(this.currentPage, query);
+        this.images = data;
+      } catch (e: any) {
+        console.log(e);
+      } finally {
+        this.loading = false;
+      }
     },
-    async getImageInfo(id: number): Promise<any> {
-      const imageData = await this.getImageInfo(id);
-      return imageData;
+    async getImageInfo(id: string): Promise<any> {
+      this.loading = true;
+      try {
+        const imageData = await getImageInfo(id);
+        return imageData;
+      } catch (e: any) {
+        console.log(e);
+      } finally {
+        this.loading = false;
+      }
     },
   },
 });

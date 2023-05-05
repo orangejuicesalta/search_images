@@ -14,14 +14,16 @@ export async function getPhotos(page: number, search: string) {
     per_page: "8",
     page: page.toString(),
     query: search,
-    orientation: "portrait",
+    orientation: "landscape",
   };
   const filteredParams = new URLSearchParams(params);
   const { data } = await api.get(`/photos/random?${filteredParams}`);
   return data;
 }
 
-export async function getImage(id: number) {
-  const { data } = await api.get(`/photos/${id}`);
+export async function getImageInfo(id: string) {
+  const { data } = await api.get(
+    `/photos/${id}?client_id=QKIi0V34osp9icywfkd9fv_CbxowYWBofq94warenQs`
+  );
   return data;
 }

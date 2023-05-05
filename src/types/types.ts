@@ -19,8 +19,10 @@ export interface IImageData {
   user: {
     username: string;
     name: string;
-    links: {
-      // portfolio
+    twitter_username: string;
+    profile_image: {
+      small: string;
+      medium: string;
     };
   };
 }
